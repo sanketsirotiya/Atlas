@@ -1,0 +1,65 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Nav -->
+  <nav class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-900">Atlas Portfolio Engine</h1>
+    <button (click)="logout()" class="text-sm text-gray-500 hover:text-red-500 transition">
+      Sign Out
+    </button>
+  </nav>
+
+  <div class="max-w-5xl mx-auto px-6 py-10">
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-gray-800">Clients</h2>
+      <p class="text-sm text-gray-500 mt-1">Select a client to view their portfolio</p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-20 text-gray-400">Loading clients...</div>
+
+    <!-- Error -->
+    <div *ngIf="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+      {{ error }}
+    </div>
+
+    <!-- Client Table -->
+    <div *ngIf="!loading && !error" class="bg-white rounded-2xl shadow overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="text-left px-6 py-3 text-gray-500 font-medium">Name</th>
+            <th class="text-left px-6 py-3 text-gray-500 font-medium">Email</th>
+            <th class="text-left px-6 py-3 text-gray-500 font-medium">Risk Category</th>
+            <th class="text-left px-6 py-3 text-gray-500 font-medium">Risk Score</th>
+            <th class="text-left px-6 py-3 text-gray-500 font-medium">Member Since</th>
+            <th class="px-6 py-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let client of clients"
+            class="border-b border-gray-100 hover:bg-blue-50 cursor-pointer transition"
+            (click)="goToClient(client.id)"
+          >
+            <td class="px-6 py-4 font-medium text-gray-800">{{ client.fullName }}</td>
+            <td class="px-6 py-4 text-gray-500">{{ client.email }}</td>
+            <td class="px-6 py-4">
+              <span
+                class="px-2 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-700': client.riskProfile?.category === 'Growth',
+                  'bg-yellow-100 text-yellow-700': client.riskProfile?.category === 'Balanced',
+                  'bg-blue-100 text-blue-700': client.riskProfile?.category === 'Conservative',
+                }"
+              >
+                {{ client.riskProfile?.category ?? 'Not Assessed' }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-gray-600">{{ client.riskProfile?.score ?? '—' }}</td>
+            <td class="px-6 py-4 text-gray-500">{{ client.createdAt | date: 'mediumDate' }}</td>
+            <td class="px-6 py-4 text-blue-500 font-medium">View →</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<div class="min-h-screen bg-gray-50">
+  <nav class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-900">Atlas Portfolio Engine</h1>
+    <button (click)="goBack()" class="text-sm text-gray-500 hover:text-blue-500 transition">
+      ← Back
+    </button>
+  </nav>
+
+  <div class="max-w-5xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Portfolio</h2>
+
+    <div *ngIf="loading" class="text-center py-20 text-gray-400">Loading portfolio...</div>
+    <div *ngIf="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+      {{ error }}
+    </div>
+
+    <div *ngIf="portfolio">
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-2xl shadow p-5">
+          <p class="text-xs text-gray-400 mb-1">Total Market Value</p>
+          <p class="text-2xl font-bold text-gray-800">
+            ${{ portfolio.totalMarketValue | number: '1.2-2' }}
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5">
+          <p class="text-xs text-gray-400 mb-1">Cash Balance</p>
+          <p class="text-2xl font-bold text-gray-800">
+            ${{ portfolio.cashBalance | number: '1.2-2' }}
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5">
+          <p class="text-xs text-gray-400 mb-1">Unrealized Gain/Loss</p>
+          <p
+            class="text-2xl font-bold"
+            [ngClass]="portfolio.totalUnrealizedGainLoss >= 0 ? 'text-green-600' : 'text-red-600'"
+          >
+            ${{ portfolio.totalUnrealizedGainLoss | number: '1.2-2' }}
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5">
+          <p class="text-xs text-gray-400 mb-1">Return %</p>
+          <p
+            class="text-2xl font-bold"
+            [ngClass]="portfolio.returnPercentage >= 0 ? 'text-green-600' : 'text-red-600'"
+          >
+            {{ portfolio.returnPercentage }}%
+          </p>
+        </div>
+      </div>
+
+      <!-- Holdings Table -->
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h3 class="text-lg font-semibold text-gray-800">Holdings</h3>
+        </div>
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="text-left px-6 py-3 text-gray-500 font-medium">Symbol</th>
+              <th class="text-left px-6 py-3 text-gray-500 font-medium">Asset Class</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Quantity</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Avg Cost</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Current Price</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Market Value</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Weight %</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Gain/Loss</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let h of portfolio.holdings"
+              class="border-b border-gray-100 hover:bg-gray-50"
+            >
+              <td class="px-6 py-4 font-semibold text-gray-800">{{ h.symbol }}</td>
+              <td class="px-6 py-4 text-gray-500">{{ h.assetClass }}</td>
+              <td class="px-6 py-4 text-right text-gray-600">{{ h.quantity }}</td>
+              <td class="px-6 py-4 text-right text-gray-600">
+                ${{ h.averageCost | number: '1.2-2' }}
+              </td>
+              <td class="px-6 py-4 text-right text-gray-600">
+                ${{ h.currentPrice | number: '1.2-2' }}
+              </td>
+              <td class="px-6 py-4 text-right font-medium text-gray-800">
+                ${{ h.marketValue | number: '1.2-2' }}
+              </td>
+              <td class="px-6 py-4 text-right text-gray-600">{{ h.weight }}%</td>
+              <td
+                class="px-6 py-4 text-right font-medium"
+                [ngClass]="h.unrealizedGainLoss >= 0 ? 'text-green-600' : 'text-red-600'"
+              >
+                ${{ h.unrealizedGainLoss | number: '1.2-2' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

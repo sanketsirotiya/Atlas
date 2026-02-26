@@ -1,0 +1,97 @@
+<div class="min-h-screen bg-gray-50">
+  <nav class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-900">Atlas Portfolio Engine</h1>
+    <button (click)="goBack()" class="text-sm text-gray-500 hover:text-blue-500 transition">
+      ← Back
+    </button>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-6 py-10">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800">Drift Report</h2>
+        <p class="text-sm text-gray-500 mt-1">Actual vs target allocation</p>
+      </div>
+      <div *ngIf="drift?.requiresRebalancing">
+        <button
+          (click)="goToRebalance()"
+          class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+        >
+          Rebalance Now →
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-20 text-gray-400">Loading drift report...</div>
+    <div *ngIf="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+      {{ error }}
+    </div>
+
+    <div *ngIf="drift">
+      <!-- Status Banner -->
+      <div
+        class="rounded-2xl p-4 mb-6 flex items-center gap-3"
+        [ngClass]="
+          drift.requiresRebalancing
+            ? 'bg-yellow-50 border border-yellow-200'
+            : 'bg-green-50 border border-green-200'
+        "
+      >
+        <span class="text-2xl">{{ drift.requiresRebalancing ? '⚠️' : '✅' }}</span>
+        <div>
+          <p class="font-semibold text-gray-800">
+            {{ drift.requiresRebalancing ? 'Rebalancing Required' : 'Portfolio is Balanced' }}
+          </p>
+          <p class="text-sm text-gray-500">Risk Category: {{ drift.riskCategory }}</p>
+        </div>
+      </div>
+
+      <!-- Drift Table -->
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="text-left px-6 py-3 text-gray-500 font-medium">Asset Class</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Target %</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Actual %</th>
+              <th class="text-right px-6 py-3 text-gray-500 font-medium">Drift %</th>
+              <th class="text-left px-6 py-3 text-gray-500 font-medium">Actual Allocation</th>
+              <th class="text-center px-6 py-3 text-gray-500 font-medium">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of drift.drift" class="border-b border-gray-100 hover:bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-800">{{ d.assetClass }}</td>
+              <td class="px-6 py-4 text-right text-gray-600">{{ d.targetWeight }}%</td>
+              <td class="px-6 py-4 text-right text-gray-600">{{ d.actualWeight }}%</td>
+              <td class="px-6 py-4 text-right" [class]="getDriftClass(d.driftPercentage)">
+                {{ d.driftPercentage > 0 ? '+' : '' }}{{ d.driftPercentage }}%
+              </td>
+              <td class="px-6 py-4">
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    class="h-2 rounded-full"
+                    [ngClass]="d.requiresRebalancing ? 'bg-yellow-400' : 'bg-blue-400'"
+                    [style.width]="getBarWidth(d.actualWeight)"
+                  ></div>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span
+                  *ngIf="d.requiresRebalancing"
+                  class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold"
+                  >Drift</span
+                >
+                <span
+                  *ngIf="!d.requiresRebalancing"
+                  class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold"
+                  >OK</span
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

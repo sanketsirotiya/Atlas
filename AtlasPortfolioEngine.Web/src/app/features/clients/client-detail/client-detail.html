@@ -1,0 +1,94 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Nav -->
+  <nav class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-900">Atlas Portfolio Engine</h1>
+    <button (click)="logout()" class="text-sm text-gray-500 hover:text-red-500 transition">
+      Sign Out
+    </button>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-6 py-10">
+    <!-- Back -->
+    <button (click)="goBack()" class="text-sm text-blue-500 hover:underline mb-6 block">
+      ← Back to Clients
+    </button>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-20 text-gray-400">Loading client...</div>
+    <div *ngIf="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+      {{ error }}
+    </div>
+
+    <div *ngIf="client">
+      <!-- Client Header -->
+      <div class="bg-white rounded-2xl shadow p-6 mb-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">{{ client.fullName }}</h2>
+            <p class="text-sm text-gray-500 mt-1">{{ client.email }}</p>
+            <p class="text-sm text-gray-400 mt-1">
+              DOB: {{ client.dateOfBirth | date: 'mediumDate' }}
+            </p>
+          </div>
+          <div class="text-right">
+            <span
+              class="px-3 py-1 rounded-full text-sm font-semibold"
+              [ngClass]="{
+                'bg-green-100 text-green-700': client.riskProfile?.category === 'Growth',
+                'bg-yellow-100 text-yellow-700': client.riskProfile?.category === 'Balanced',
+                'bg-blue-100 text-blue-700': client.riskProfile?.category === 'Conservative',
+              }"
+            >
+              {{ client.riskProfile?.category ?? 'Not Assessed' }}
+            </span>
+            <p class="text-sm text-gray-400 mt-2">
+              Risk Score: {{ client.riskProfile?.score ?? '—' }}
+            </p>
+            <p class="text-xs text-gray-400 mt-1">
+              Assessed: {{ client.riskProfile?.assessedAt | date: 'mediumDate' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Cards -->
+      <div class="grid grid-cols-2 gap-4">
+        <div
+          (click)="goToPortfolio()"
+          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-blue-200 border border-transparent transition"
+        >
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">Portfolio</h3>
+          <p class="text-sm text-gray-500">View holdings, market value, and performance</p>
+          <p class="text-blue-500 text-sm font-medium mt-4">View Portfolio →</p>
+        </div>
+
+        <div
+          (click)="goToDrift()"
+          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-yellow-200 border border-transparent transition"
+        >
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">Drift Report</h3>
+          <p class="text-sm text-gray-500">Check allocation drift against target model</p>
+          <p class="text-yellow-500 text-sm font-medium mt-4">View Drift →</p>
+        </div>
+
+        <div
+          (click)="goToRebalance()"
+          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-green-200 border border-transparent transition"
+        >
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">Rebalancing</h3>
+          <p class="text-sm text-gray-500">Preview and execute rebalance orders</p>
+          <p class="text-green-500 text-sm font-medium mt-4">View Rebalance →</p>
+        </div>
+
+        <div
+          (click)="goToSuitability()"
+          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-purple-200 border border-transparent transition"
+        >
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">Suitability Check</h3>
+          <p class="text-sm text-gray-500">Validate trade compliance before execution</p>
+          <p class="text-purple-500 text-sm font-medium mt-4">Check Suitability →</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

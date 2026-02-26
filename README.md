@@ -1,6 +1,6 @@
 # Atlas Portfolio Engine
 
-A full-stack robo-advisor demo built for a fintech interview. Demonstrates Clean Architecture, portfolio management domain logic, compliance enforcement, and a modern Angular frontend.
+A full-stack robo-advisor demo built for a fintech. Demonstrates Clean Architecture, portfolio management domain logic, compliance enforcement, and a modern Angular frontend.
 
 ---
 

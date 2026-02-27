@@ -27,6 +27,12 @@ public class SuitabilityService : ISuitabilityService
         decimal amount,
         decimal totalPortfolioValue)
     {
+        var validAssetClasses = new[] { "CanadianEquity", "USEquity", "InternationalEquity", "CanadianBonds", "GlobalBonds", "Cash" };
+            if (!validAssetClasses.Contains(assetClass))
+        return SuitabilityResult.Rejected(
+            "INVALID_ASSET_CLASS",
+            $"Invalid asset class '{assetClass}'. Valid values: {string.Join(", ", validAssetClasses)}"
+        );
         // Only check Buy transactions — sells are always permitted
         if (transactionType != TransactionType.Buy)
             return SuitabilityResult.Approved();

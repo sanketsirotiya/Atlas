@@ -113,9 +113,6 @@
 				{
 					"name": "api/v1/clients",
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "GET",
 						"header": [],
 						"url": {

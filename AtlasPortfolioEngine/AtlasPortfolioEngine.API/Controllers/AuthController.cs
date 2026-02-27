@@ -3,11 +3,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Asp.Versioning;
 
 namespace AtlasPortfolioEngine.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+//[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/auth")]
+[ApiVersion("1.0")]
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;

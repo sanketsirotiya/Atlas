@@ -2,11 +2,14 @@ using AtlasPortfolioEngine.Application.Interfaces;
 using AtlasPortfolioEngine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Asp.Versioning;
 
 namespace AtlasPortfolioEngine.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+//[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/portfolio")]
+[ApiVersion("1.0")]
 public class PortfolioController : ControllerBase
 {
     private readonly AtlasDbContext _context;

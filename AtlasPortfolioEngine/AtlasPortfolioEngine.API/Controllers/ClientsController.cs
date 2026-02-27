@@ -3,11 +3,15 @@ using AtlasPortfolioEngine.Domain.Enums;
 using AtlasPortfolioEngine.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Asp.Versioning; 
+
 
 namespace AtlasPortfolioEngine.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+//[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/clients")]
+[ApiVersion("1.0")]
 public class ClientsController : ControllerBase
 {
     private readonly AtlasDbContext _context;

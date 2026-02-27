@@ -15,8 +15,18 @@ builder.Services.AddApiVersioning(options =>
     options.DefaultApiVersion = new ApiVersion(1, 0);
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.ReportApiVersions = true;
+    // Combine multiple versioning strategies (URL segment and header)
+    // We support both simultaneously using ApiVersionReader.
+    // Combine so consumers can choose their preferred style.
     options.ApiVersionReader =  ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
+        // URL Versioning — /api/v1/clients 
+        // URL versioning is explicit and cacheable — great for public APIs.
+        new UrlSegmentApiVersionReader(), 
+
+        // Header Versioning — api-version: 1 in request headers
+        // Header versioning keeps URLs clean
+        // Header versioning allows for more complex versioning strategies.
+        // Header versioning preferred in enterprise APIs like Azure
         new HeaderApiVersionReader("api-version")
     );
 }).AddApiExplorer(options =>

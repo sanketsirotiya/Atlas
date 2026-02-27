@@ -10,6 +10,7 @@ namespace AtlasPortfolioEngine.API.Controllers;
 
 [ApiController]
 //[Route("api/[controller]")]
+[Route("api/clients")]
 [Route("api/v{version:apiVersion}/clients")]
 [ApiVersion("1.0")]
 public class ClientsController : ControllerBase

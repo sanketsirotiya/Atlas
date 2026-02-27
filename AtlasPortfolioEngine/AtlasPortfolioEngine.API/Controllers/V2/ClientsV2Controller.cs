@@ -7,6 +7,7 @@ using AtlasPortfolioEngine.Infrastructure.Persistence;
 namespace AtlasPortfolioEngine.API.Controllers.V2;
 
 [ApiController]
+[Route("api/clients")]
 [Route("api/v{version:apiVersion}/clients")]
 [ApiVersion("2.0")]
 [Authorize]

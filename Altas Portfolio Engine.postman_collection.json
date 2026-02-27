@@ -1,0 +1,344 @@
+{
+	"info": {
+		"_postman_id": "e68538c8-25e3-4d35-8de5-03f5a61d218b",
+		"name": "Altas Portfolio Engine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7616750"
+	},
+	"item": [
+		{
+			"name": "Header Version",
+			"item": [
+				{
+					"name": "api/clients version 1",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-version",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/clients version 2 - Auth",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-version",
+								"value": "2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "URL Version",
+			"item": [
+				{
+					"name": "api/v1/auth/token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"advisor\",\r\n  \"password\": \"atlas2026\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v2/clients - Auth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v2/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/clients",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/clients/{{clientId}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clients",
+								"{{clientId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/clients/{{clientId}}/risk-assessment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[3, 4, 5, 4, 3]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/clients/{{clientId}}/risk-assessment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clients",
+								"{{clientId}}",
+								"risk-assessment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/portfolio/{{clientId}}/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/portfolio/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"portfolio",
+								"{{clientId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/portfolio/{{clientId}}/drift",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/portfolio/{{clientId}}/drift",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"portfolio",
+								"{{clientId}}",
+								"drift"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/rebalance/{{clientId}}/preview",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/rebalance/{{clientId}}/preview",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"rebalance",
+								"{{clientId}}",
+								"preview"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/rebalance/{{clientId}}/execute",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/rebalance/{{clientId}}/execute",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"rebalance",
+								"{{clientId}}",
+								"execute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api/v1/suitability/check",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"clientId\": \"e9dc45b6-a841-47a6-917e-48613706d059\",\r\n  \"assetClass\": \"InternationalEquity\",\r\n  \"transactionType\": \"Buy\",\r\n  \"amount\": 100000000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/suitability/check",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"suitability",
+								"check"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWR2aXNvciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkdmlzb3IiLCJzeXN0ZW0iOiJBdGxhc1BvcnRmb2xpb0VuZ2luZSIsImV4cCI6MTc3MjE3MjE5OCwiaXNzIjoiQXRsYXNQb3J0Zm9saW9FbmdpbmUiLCJhdWQiOiJBdGxhc1BvcnRmb2xpb0VuZ2luZS5DbGllbnQifQ.4vbklV6ZwgXLF4jf9rIZunBc8vD4ifCbcAh1rdIBw4g",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "clientId",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": ""
+		}
+	]
+}

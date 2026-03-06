@@ -73,7 +73,11 @@ builder.Services.AddScoped<ISuitabilityService, SuitabilityService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
-        policy.WithOrigins("http://localhost:4200")
+        policy.SetIsOriginAllowed(origin =>
+        {
+            var uri = new Uri(origin);
+            return uri.Host == "localhost" || uri.Host.StartsWith("192.168.");
+        })
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
@@ -92,7 +96,7 @@ if (app.Environment.IsDevelopment())
     );
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Disabled for local network / mobile access
 
 app.UseCors("AllowAngular");
 app.UseAuthentication(); 

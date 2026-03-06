@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:5146/api/v1/auth';
+  private readonly apiUrl = `http://${window.location.hostname}:5146/api/v1/auth`;
   private readonly tokenKey = 'atlas_token';
 
   constructor(

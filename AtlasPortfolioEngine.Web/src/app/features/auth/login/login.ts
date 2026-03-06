@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,17 +20,20 @@ export class Login {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   onSubmit() {
     this.error = '';
     this.loading = true;
+    this.cdr.detectChanges();
 
     this.authService.login(this.username, this.password).subscribe({
       next: () => this.router.navigate(['/clients']),
       error: () => {
         this.error = 'Invalid credentials. Please try again.';
         this.loading = false;
+        this.cdr.detectChanges();
       },
     });
   }

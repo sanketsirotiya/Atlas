@@ -11,11 +11,15 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class Sidebar {
   @Input() clientId?: string;
+  open = false;
 
   constructor(
     public router: Router,
     private authService: AuthService,
   ) {}
+
+  toggle() { this.open = !this.open; }
+  close() { this.open = false; }
 
   isActive(segment: string): boolean {
     const url = this.router.url;
@@ -28,9 +32,11 @@ export class Sidebar {
 
   navigate(path: string) {
     this.router.navigate([path]);
+    this.open = false;
   }
 
   logout() {
     this.authService.logout();
+    this.open = false;
   }
 }

@@ -1,9 +1,9 @@
 <div class="flex min-h-screen bg-slate-50">
   <app-sidebar [clientId]="clientId" />
 
-  <main class="flex-1 p-8 overflow-auto">
+  <main class="flex-1 p-4 pt-14 md:p-8 overflow-auto">
 
-    <div class="mb-8">
+    <div class="mb-6 pr-10 md:pr-0">
       <h2 class="text-2xl font-bold text-slate-900">Portfolio</h2>
       <p class="text-sm text-slate-500 mt-0.5">Holdings, market value and performance</p>
     </div>
@@ -21,26 +21,26 @@
     @if (portfolio) {
 
       <!-- Metric Cards -->
-      <div class="grid grid-cols-4 gap-4 mb-8">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 border-t-4 border-t-indigo-500">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Total Market Value</p>
-          <p class="text-2xl font-bold text-slate-900">${{ portfolio.totalMarketValue | number: '1.2-2' }}</p>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-5 border-t-4 border-t-indigo-500">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Market Value</p>
+          <p class="text-lg md:text-2xl font-bold text-slate-900">${{ portfolio.totalMarketValue | number: '1.2-2' }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 border-t-4 border-t-slate-400">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-5 border-t-4 border-t-slate-400">
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Cash Balance</p>
-          <p class="text-2xl font-bold text-slate-900">${{ portfolio.cashBalance | number: '1.2-2' }}</p>
+          <p class="text-lg md:text-2xl font-bold text-slate-900">${{ portfolio.cashBalance | number: '1.2-2' }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5"
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-5"
           [ngClass]="portfolio.totalUnrealizedGainLoss >= 0 ? 'border-t-4 border-t-emerald-500' : 'border-t-4 border-t-rose-500'">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Unrealized Gain/Loss</p>
-          <p class="text-2xl font-bold" [ngClass]="portfolio.totalUnrealizedGainLoss >= 0 ? 'text-emerald-600' : 'text-rose-600'">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Unrealized G/L</p>
+          <p class="text-lg md:text-2xl font-bold" [ngClass]="portfolio.totalUnrealizedGainLoss >= 0 ? 'text-emerald-600' : 'text-rose-600'">
             ${{ portfolio.totalUnrealizedGainLoss | number: '1.2-2' }}
           </p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5"
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-5"
           [ngClass]="portfolio.returnPercentage >= 0 ? 'border-t-4 border-t-emerald-500' : 'border-t-4 border-t-rose-500'">
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Total Return</p>
-          <p class="text-2xl font-bold" [ngClass]="portfolio.returnPercentage >= 0 ? 'text-emerald-600' : 'text-rose-600'">
+          <p class="text-lg md:text-2xl font-bold" [ngClass]="portfolio.returnPercentage >= 0 ? 'text-emerald-600' : 'text-rose-600'">
             {{ portfolio.returnPercentage }}%
           </p>
         </div>
@@ -48,40 +48,42 @@
 
       <!-- Holdings Table -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100">
+        <div class="px-4 md:px-6 py-4 border-b border-slate-100">
           <h3 class="text-base font-semibold text-slate-800">Holdings</h3>
         </div>
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="bg-slate-50 border-b border-slate-100">
-              <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Symbol</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Asset Class</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Qty</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Avg Cost</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Market Value</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Weight</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Gain/Loss</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            @for (h of portfolio.holdings; track h.symbol) {
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-bold text-indigo-700 font-mono text-xs">{{ h.symbol }}</td>
-                <td class="px-6 py-4 text-slate-500 text-xs">{{ h.assetClass }}</td>
-                <td class="px-6 py-4 text-right text-slate-600 font-mono text-xs">{{ h.quantity }}</td>
-                <td class="px-6 py-4 text-right text-slate-600 font-mono text-xs">${{ h.averageCost | number: '1.2-2' }}</td>
-                <td class="px-6 py-4 text-right text-slate-600 font-mono text-xs">${{ h.currentPrice | number: '1.2-2' }}</td>
-                <td class="px-6 py-4 text-right font-semibold text-slate-800 font-mono text-xs">${{ h.marketValue | number: '1.2-2' }}</td>
-                <td class="px-6 py-4 text-right text-slate-500 font-mono text-xs">{{ h.weight }}%</td>
-                <td class="px-6 py-4 text-right font-semibold font-mono text-xs"
-                  [ngClass]="h.unrealizedGainLoss >= 0 ? 'text-emerald-600' : 'text-rose-600'">
-                  ${{ h.unrealizedGainLoss | number: '1.2-2' }}
-                </td>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-100">
+                <th class="text-left px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Symbol</th>
+                <th class="text-left px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden sm:table-cell">Asset Class</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden md:table-cell">Qty</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden md:table-cell">Avg Cost</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden sm:table-cell">Price</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Value</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden sm:table-cell">Weight</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">G/L</th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (h of portfolio.holdings; track h.symbol) {
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="px-4 md:px-6 py-4 font-bold text-indigo-700 font-mono text-xs">{{ h.symbol }}</td>
+                  <td class="px-4 md:px-6 py-4 text-slate-500 text-xs hidden sm:table-cell">{{ h.assetClass }}</td>
+                  <td class="px-4 md:px-6 py-4 text-right text-slate-600 font-mono text-xs hidden md:table-cell">{{ h.quantity }}</td>
+                  <td class="px-4 md:px-6 py-4 text-right text-slate-600 font-mono text-xs hidden md:table-cell">${{ h.averageCost | number: '1.2-2' }}</td>
+                  <td class="px-4 md:px-6 py-4 text-right text-slate-600 font-mono text-xs hidden sm:table-cell">${{ h.currentPrice | number: '1.2-2' }}</td>
+                  <td class="px-4 md:px-6 py-4 text-right font-semibold text-slate-800 font-mono text-xs">${{ h.marketValue | number: '1.2-2' }}</td>
+                  <td class="px-4 md:px-6 py-4 text-right text-slate-500 font-mono text-xs hidden sm:table-cell">{{ h.weight }}%</td>
+                  <td class="px-4 md:px-6 py-4 text-right font-semibold font-mono text-xs"
+                    [ngClass]="h.unrealizedGainLoss >= 0 ? 'text-emerald-600' : 'text-rose-600'">
+                    ${{ h.unrealizedGainLoss | number: '1.2-2' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
 
     }

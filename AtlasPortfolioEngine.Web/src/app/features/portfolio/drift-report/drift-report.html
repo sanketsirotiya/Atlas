@@ -1,9 +1,9 @@
 <div class="flex min-h-screen bg-slate-50">
   <app-sidebar [clientId]="clientId" />
 
-  <main class="flex-1 p-8 overflow-auto">
+  <main class="flex-1 p-4 pt-14 md:p-8 overflow-auto">
 
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-6 flex items-center justify-between pr-10 md:pr-0">
       <div>
         <h2 class="text-2xl font-bold text-slate-900">Drift Report</h2>
         <p class="text-sm text-slate-500 mt-0.5">Actual vs target allocation</p>
@@ -13,7 +13,7 @@
           (click)="goToRebalance()"
           class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition shadow-sm"
         >
-          Rebalance Now &#8594;
+          Rebalance &#8594;
         </button>
       }
     </div>
@@ -33,9 +33,7 @@
       <!-- Status Banner -->
       <div
         class="rounded-2xl p-4 mb-6 flex items-center gap-4 border"
-        [ngClass]="drift.requiresRebalancing
-          ? 'bg-amber-50 border-amber-200'
-          : 'bg-emerald-50 border-emerald-200'"
+        [ngClass]="drift.requiresRebalancing ? 'bg-amber-50 border-amber-200' : 'bg-emerald-50 border-emerald-200'"
       >
         <div
           class="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
@@ -53,46 +51,48 @@
 
       <!-- Drift Table -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="bg-slate-50 border-b border-slate-100">
-              <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Asset Class</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Target %</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actual %</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Drift %</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider w-40">Allocation</th>
-              <th class="text-center px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            @for (d of drift.drift; track d.assetClass) {
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-semibold text-slate-800">{{ d.assetClass }}</td>
-                <td class="px-6 py-4 text-right text-slate-500 font-mono text-xs">{{ d.targetWeight }}%</td>
-                <td class="px-6 py-4 text-right text-slate-600 font-mono text-xs">{{ d.actualWeight }}%</td>
-                <td class="px-6 py-4 text-right font-mono text-xs font-semibold" [class]="getDriftClass(d.driftPercentage)">
-                  {{ d.driftPercentage > 0 ? '+' : '' }}{{ d.driftPercentage }}%
-                </td>
-                <td class="px-6 py-4 w-40">
-                  <div class="w-full bg-slate-100 rounded-full h-2">
-                    <div
-                      class="h-2 rounded-full transition-all"
-                      [ngClass]="d.requiresRebalancing ? 'bg-amber-400' : 'bg-indigo-400'"
-                      [style.width]="getBarWidth(d.actualWeight)"
-                    ></div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 text-center">
-                  @if (d.requiresRebalancing) {
-                    <span class="px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">Drift</span>
-                  } @else {
-                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">On Target</span>
-                  }
-                </td>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-100">
+                <th class="text-left px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Asset Class</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Target %</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actual %</th>
+                <th class="text-right px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Drift %</th>
+                <th class="text-left px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider w-32 hidden sm:table-cell">Allocation</th>
+                <th class="text-center px-4 md:px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (d of drift.drift; track d.assetClass) {
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="px-4 md:px-6 py-4 font-semibold text-slate-800 text-sm">{{ d.assetClass }}</td>
+                  <td class="px-4 md:px-6 py-4 text-right text-slate-500 font-mono text-xs">{{ d.targetWeight }}%</td>
+                  <td class="px-4 md:px-6 py-4 text-right text-slate-600 font-mono text-xs">{{ d.actualWeight }}%</td>
+                  <td class="px-4 md:px-6 py-4 text-right font-mono text-xs font-semibold" [class]="getDriftClass(d.driftPercentage)">
+                    {{ d.driftPercentage > 0 ? '+' : '' }}{{ d.driftPercentage }}%
+                  </td>
+                  <td class="px-4 md:px-6 py-4 w-32 hidden sm:table-cell">
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                      <div
+                        class="h-2 rounded-full transition-all"
+                        [ngClass]="d.requiresRebalancing ? 'bg-amber-400' : 'bg-indigo-400'"
+                        [style.width]="getBarWidth(d.actualWeight)"
+                      ></div>
+                    </div>
+                  </td>
+                  <td class="px-4 md:px-6 py-4 text-center">
+                    @if (d.requiresRebalancing) {
+                      <span class="px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">Drift</span>
+                    } @else {
+                      <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">On Target</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
 
     }

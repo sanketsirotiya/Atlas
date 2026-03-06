@@ -1,94 +1,124 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Nav -->
-  <nav class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-gray-900">Atlas Portfolio Engine</h1>
-    <button (click)="logout()" class="text-sm text-gray-500 hover:text-red-500 transition">
-      Sign Out
-    </button>
-  </nav>
+<div class="flex min-h-screen bg-slate-50">
+  <app-sidebar [clientId]="clientId" />
 
-  <div class="max-w-4xl mx-auto px-6 py-10">
-    <!-- Back -->
-    <button (click)="goBack()" class="text-sm text-blue-500 hover:underline mb-6 block">
-      ← Back to Clients
-    </button>
+  <main class="flex-1 overflow-auto">
 
-    <!-- Loading -->
-    <div *ngIf="loading" class="text-center py-20 text-gray-400">Loading client...</div>
-    <div *ngIf="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-      {{ error }}
-    </div>
+    @if (loading) {
+      <div class="flex items-center justify-center py-24 text-slate-400 text-sm">
+        <span class="animate-pulse">Loading client...</span>
+      </div>
+    }
 
-    <div *ngIf="client">
-      <!-- Client Header -->
-      <div class="bg-white rounded-2xl shadow p-6 mb-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-2xl font-bold text-gray-800">{{ client.fullName }}</h2>
-            <p class="text-sm text-gray-500 mt-1">{{ client.email }}</p>
-            <p class="text-sm text-gray-400 mt-1">
-              DOB: {{ client.dateOfBirth | date: 'mediumDate' }}
-            </p>
+    @if (error) {
+      <div class="p-6 bg-rose-50 border-b border-rose-200 text-rose-600 text-sm">{{ error }}</div>
+    }
+
+    @if (client) {
+
+      <!-- Hero Header -->
+      <div class="bg-gradient-to-r from-slate-900 to-indigo-900 px-8 py-6">
+        <div class="flex items-center gap-4 min-w-0">
+          <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-xl font-bold text-white flex-shrink-0">
+            {{ client.fullName?.charAt(0) }}
           </div>
-          <div class="text-right">
+          <div class="min-w-0 flex-1">
+            <h1 class="text-xl font-bold text-white truncate">{{ client.fullName }}</h1>
+            <p class="text-slate-400 text-sm truncate">{{ client.email }} &nbsp;·&nbsp; DOB: {{ client.dateOfBirth | date: 'mediumDate' }}</p>
+          </div>
+          <div class="flex items-center gap-3 flex-shrink-0">
             <span
-              class="px-3 py-1 rounded-full text-sm font-semibold"
+              class="px-3 py-1 rounded-full text-xs font-bold"
               [ngClass]="{
-                'bg-green-100 text-green-700': client.riskProfile?.category === 'Growth',
-                'bg-yellow-100 text-yellow-700': client.riskProfile?.category === 'Balanced',
-                'bg-blue-100 text-blue-700': client.riskProfile?.category === 'Conservative',
+                'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30': client.riskProfile?.category === 'Growth',
+                'bg-amber-500/20 text-amber-300 border border-amber-500/30': client.riskProfile?.category === 'Balanced',
+                'bg-blue-500/20 text-blue-300 border border-blue-500/30': client.riskProfile?.category === 'Conservative',
+                'bg-slate-500/20 text-slate-400 border border-slate-500/30': !client.riskProfile?.category
               }"
             >
               {{ client.riskProfile?.category ?? 'Not Assessed' }}
             </span>
-            <p class="text-sm text-gray-400 mt-2">
-              Risk Score: {{ client.riskProfile?.score ?? '—' }}
-            </p>
-            <p class="text-xs text-gray-400 mt-1">
-              Assessed: {{ client.riskProfile?.assessedAt | date: 'mediumDate' }}
-            </p>
+            <div class="text-right">
+              <p class="text-slate-500 text-xs">Risk Score</p>
+              <p class="text-white font-bold font-mono text-lg leading-tight">{{ client.riskProfile?.score ?? '—' }}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Action Cards -->
-      <div class="grid grid-cols-2 gap-4">
-        <div
-          (click)="goToPortfolio()"
-          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-blue-200 border border-transparent transition"
-        >
-          <h3 class="text-lg font-semibold text-gray-800 mb-1">Portfolio</h3>
-          <p class="text-sm text-gray-500">View holdings, market value, and performance</p>
-          <p class="text-blue-500 text-sm font-medium mt-4">View Portfolio →</p>
-        </div>
+      <!-- Action Cards — 4 column -->
+      <div class="p-8">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-5">Quick Actions</p>
 
-        <div
-          (click)="goToDrift()"
-          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-yellow-200 border border-transparent transition"
-        >
-          <h3 class="text-lg font-semibold text-gray-800 mb-1">Drift Report</h3>
-          <p class="text-sm text-gray-500">Check allocation drift against target model</p>
-          <p class="text-yellow-500 text-sm font-medium mt-4">View Drift →</p>
-        </div>
+        <div class="grid grid-cols-4 gap-4">
 
-        <div
-          (click)="goToRebalance()"
-          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-green-200 border border-transparent transition"
-        >
-          <h3 class="text-lg font-semibold text-gray-800 mb-1">Rebalancing</h3>
-          <p class="text-sm text-gray-500">Preview and execute rebalance orders</p>
-          <p class="text-green-500 text-sm font-medium mt-4">View Rebalance →</p>
-        </div>
+          <div
+            (click)="goToPortfolio()"
+            class="group bg-white rounded-2xl border border-slate-200 p-5 cursor-pointer hover:shadow-md hover:border-indigo-300 transition-all"
+          >
+            <div class="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-1">Portfolio</h3>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">Holdings, market value and returns</p>
+            <p class="text-xs font-semibold text-indigo-600 group-hover:text-indigo-700 flex items-center gap-1 transition-colors">
+              Open <span class="group-hover:translate-x-0.5 transition-transform inline-block">&#8594;</span>
+            </p>
+          </div>
 
-        <div
-          (click)="goToSuitability()"
-          class="bg-white rounded-2xl shadow p-6 cursor-pointer hover:shadow-md hover:border-purple-200 border border-transparent transition"
-        >
-          <h3 class="text-lg font-semibold text-gray-800 mb-1">Suitability Check</h3>
-          <p class="text-sm text-gray-500">Validate trade compliance before execution</p>
-          <p class="text-purple-500 text-sm font-medium mt-4">Check Suitability →</p>
+          <div
+            (click)="goToDrift()"
+            class="group bg-white rounded-2xl border border-slate-200 p-5 cursor-pointer hover:shadow-md hover:border-amber-300 transition-all"
+          >
+            <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+              </svg>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-1">Drift Report</h3>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">Allocation drift vs target model</p>
+            <p class="text-xs font-semibold text-amber-600 group-hover:text-amber-700 flex items-center gap-1 transition-colors">
+              View <span class="group-hover:translate-x-0.5 transition-transform inline-block">&#8594;</span>
+            </p>
+          </div>
+
+          <div
+            (click)="goToRebalance()"
+            class="group bg-white rounded-2xl border border-slate-200 p-5 cursor-pointer hover:shadow-md hover:border-emerald-300 transition-all"
+          >
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-1">Rebalance</h3>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">Preview and execute orders</p>
+            <p class="text-xs font-semibold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 transition-colors">
+              View <span class="group-hover:translate-x-0.5 transition-transform inline-block">&#8594;</span>
+            </p>
+          </div>
+
+          <div
+            (click)="goToSuitability()"
+            class="group bg-white rounded-2xl border border-slate-200 p-5 cursor-pointer hover:shadow-md hover:border-violet-300 transition-all"
+          >
+            <div class="w-9 h-9 rounded-xl bg-violet-100 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <h3 class="font-bold text-slate-800 mb-1">Suitability</h3>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">Validate trade compliance</p>
+            <p class="text-xs font-semibold text-violet-600 group-hover:text-violet-700 flex items-center gap-1 transition-colors">
+              Check <span class="group-hover:translate-x-0.5 transition-transform inline-block">&#8594;</span>
+            </p>
+          </div>
+
         </div>
       </div>
-    </div>
-  </div>
+
+    }
+
+  </main>
 </div>

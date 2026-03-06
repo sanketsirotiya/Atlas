@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
+import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-suitability-check',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Sidebar],
   templateUrl: './suitability-check.html',
   styleUrl: './suitability-check.css',
 })
@@ -46,6 +47,11 @@ export class SuitabilityCheck implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  resetResult() {
+    this.result = null;
+    this.error = '';
   }
 
   check() {

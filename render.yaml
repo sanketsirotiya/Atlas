@@ -10,7 +10,6 @@ services:
   - type: web
     name: atlas-api
     runtime: docker
-    plan: free
     dockerfilePath: ./AtlasPortfolioEngine/Dockerfile
     dockerContext: ./AtlasPortfolioEngine
     envVars:
@@ -35,7 +34,6 @@ services:
   - type: web
     name: atlas-web
     runtime: static
-    plan: free
     rootDir: AtlasPortfolioEngine.Web
     buildCommand: npm install && npm run build
     staticPublishPath: dist/AtlasPortfolioEngine.Web/browser

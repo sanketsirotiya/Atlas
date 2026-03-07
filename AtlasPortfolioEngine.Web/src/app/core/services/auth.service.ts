@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiUrl = `http://${window.location.hostname}:5146/api/v1/auth`;
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
   private readonly tokenKey = 'atlas_token';
 
   constructor(

@@ -15,18 +15,8 @@ builder.Services.AddApiVersioning(options =>
     options.DefaultApiVersion = new ApiVersion(1, 0);
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.ReportApiVersions = true;
-    // Combine multiple versioning strategies (URL segment and header)
-    // We support both simultaneously using ApiVersionReader.
-    // Combine so consumers can choose their preferred style.
-    options.ApiVersionReader =  ApiVersionReader.Combine(
-        // URL Versioning — /api/v1/clients 
-        // URL versioning is explicit and cacheable — great for public APIs.
-        new UrlSegmentApiVersionReader(), 
-
-        // Header Versioning — api-version: 1 in request headers
-        // Header versioning keeps URLs clean
-        // Header versioning allows for more complex versioning strategies.
-        // Header versioning preferred in enterprise APIs like Azure
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
         new HeaderApiVersionReader("api-version")
     );
 }).AddApiExplorer(options =>
@@ -41,7 +31,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v2", new() { Title = "AtlasPortfolioEngine.API", Version = "v2" });
 });
 
-builder.Services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -49,7 +39,7 @@ builder.Services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
-            ValidateIssuerSigningKey = true, 
+            ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
@@ -59,9 +49,18 @@ builder.Services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// EF Core
-builder.Services.AddDbContext<AtlasDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// EF Core — auto-detects PostgreSQL (Render) vs SQL Server (local) by connection string format
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+if (connectionString.StartsWith("Host=", StringComparison.OrdinalIgnoreCase) ||
+    connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
+    connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddDbContext<AtlasDbContext>(options => options.UseNpgsql(connectionString));
+}
+else
+{
+    builder.Services.AddDbContext<AtlasDbContext>(options => options.UseSqlServer(connectionString));
+}
 
 // Application Services
 builder.Services.AddScoped<IRiskProfileService, RiskProfileService>();
@@ -70,13 +69,16 @@ builder.Services.AddScoped<IDriftDetectionService, DriftDetectionService>();
 builder.Services.AddScoped<IRebalancingService, RebalancingService>();
 builder.Services.AddScoped<ISuitabilityService, SuitabilityService>();
 
+// CORS — allow localhost (dev), local network (mobile), and any *.onrender.com origin
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
         policy.SetIsOriginAllowed(origin =>
         {
             var uri = new Uri(origin);
-            return uri.Host == "localhost" || uri.Host.StartsWith("192.168.");
+            return uri.Host == "localhost" ||
+                   uri.Host.StartsWith("192.168.") ||
+                   uri.Host.EndsWith(".onrender.com");
         })
               .AllowAnyHeader()
               .AllowAnyMethod());
@@ -84,30 +86,29 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// Swagger available in all environments for demo purposes
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(
-        c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "AtlasPortfolioEngine.API v1");
-            c.SwaggerEndpoint("/swagger/v2/swagger.json", "AtlasPortfolioEngine.API v2");
-        }
-    );
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "AtlasPortfolioEngine.API v1");
+    c.SwaggerEndpoint("/swagger/v2/swagger.json", "AtlasPortfolioEngine.API v2");
+});
 
-// app.UseHttpsRedirection(); // Disabled for local network / mobile access
+// app.UseHttpsRedirection(); // Render handles HTTPS at the reverse proxy level
 
 app.UseCors("AllowAngular");
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// Seed data
+// Create schema and seed data on startup (works for both fresh PostgreSQL and existing SQL Server)
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AtlasDbContext>();
+    await context.Database.EnsureCreatedAsync();
     await AtlasDbContextSeed.SeedAsync(context);
 }
 
-app.Run();
+// Bind to PORT env var set by Render, fallback to 5146 for local dev
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5146";
+app.Run($"http://0.0.0.0:{port}");

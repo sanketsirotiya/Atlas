@@ -1,0 +1,46 @@
+databases:
+  - name: atlas-db
+    databaseName: atlas_portfolio
+    user: atlas_user
+    plan: free
+
+services:
+
+  # ── .NET 10 API ──────────────────────────────────────────────────────────────
+  - type: web
+    name: atlas-api
+    runtime: dotnet
+    plan: free
+    rootDir: AtlasPortfolioEngine
+    buildCommand: dotnet publish AtlasPortfolioEngine.API/AtlasPortfolioEngine.API.csproj -c Release -o out
+    startCommand: dotnet out/AtlasPortfolioEngine.API.dll
+    envVars:
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: atlas-db
+          property: connectionString
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Jwt__Key
+        value: AtlasPortfolioEngine-SuperSecret-Key-2026!
+      - key: Jwt__Issuer
+        value: AtlasPortfolioEngine
+      - key: Jwt__Audience
+        value: AtlasPortfolioEngine.Client
+      - key: Jwt__DemoUsername
+        value: advisor
+      - key: Jwt__DemoPassword
+        value: atlas2026
+
+  # ── Angular 19 Static Site ───────────────────────────────────────────────────
+  - type: web
+    name: atlas-web
+    runtime: static
+    plan: free
+    rootDir: AtlasPortfolioEngine.Web
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist/AtlasPortfolioEngine.Web/browser
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

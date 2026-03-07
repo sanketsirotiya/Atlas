@@ -9,11 +9,10 @@ services:
   # ── .NET 10 API ──────────────────────────────────────────────────────────────
   - type: web
     name: atlas-api
-    runtime: dotnet
+    runtime: docker
     plan: free
-    rootDir: AtlasPortfolioEngine
-    buildCommand: dotnet publish AtlasPortfolioEngine.API/AtlasPortfolioEngine.API.csproj -c Release -o out
-    startCommand: dotnet out/AtlasPortfolioEngine.API.dll
+    dockerfilePath: ./AtlasPortfolioEngine/Dockerfile
+    dockerContext: ./AtlasPortfolioEngine
     envVars:
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:

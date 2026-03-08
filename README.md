@@ -1,6 +1,10 @@
 # Atlas Portfolio Engine
 
-A full-stack robo-advisor demo built for a fintech. Demonstrates Clean Architecture, portfolio management domain logic, compliance enforcement, and a modern Angular frontend.
+A full-stack robo-advisor demo showcasing fintech domain knowledge — risk profiling, portfolio management, drift detection, rebalancing, and compliance enforcement.
+
+**Live Demo:** https://atlas-production-5b80.up.railway.app
+
+**Demo credentials:** `advisor` / `atlas2026`
 
 ---
 
@@ -9,10 +13,11 @@ A full-stack robo-advisor demo built for a fintech. Demonstrates Clean Architect
 | Layer    | Technology                                        |
 | -------- | ------------------------------------------------- |
 | Backend  | .NET 10, C#, Clean Architecture                   |
-| Database | SQL Server, EF Core 9                             |
+| Database | PostgreSQL, EF Core 9                             |
 | Frontend | Angular 19, Tailwind CSS 3, Standalone Components |
 | Auth     | JWT Bearer Tokens                                 |
 | Testing  | xUnit, FluentAssertions, Moq (26 tests)           |
+| Hosting  | Railway (API + DB + Frontend)                     |
 
 ---
 
@@ -30,7 +35,7 @@ AtlasPortfolioEngine/
     └── src/app/
         ├── core/                       # Auth service, API service, guard, interceptor
         ├── features/                   # 7 views (auth, clients, portfolio, rebalance, suitability)
-        └── shared/                     # Shared components
+        └── shared/                     # Sidebar component
 ```
 
 ---
@@ -78,78 +83,66 @@ Validates every trade against the client's risk profile before execution:
 
 ## API Endpoints
 
+Base URL: `https://atlas-production-ad63.up.railway.app`
+
 All endpoints (except `/api/auth/token`) require `Authorization: Bearer <token>`.
 
 | Method | Endpoint                            | Description                      |
 | ------ | ----------------------------------- | -------------------------------- |
-| POST   | `/api/auth/token`                   | Get JWT token                    |
-| GET    | `/api/clients`                      | List all clients                 |
-| GET    | `/api/clients/{id}`                 | Client detail + risk profile     |
-| POST   | `/api/clients/{id}/risk-assessment` | Submit risk questionnaire        |
-| GET    | `/api/portfolio/{clientId}`         | Holdings, market value, return % |
-| GET    | `/api/portfolio/{clientId}/drift`   | Drift vs target allocation       |
-| GET    | `/api/rebalance/{clientId}/preview` | Preview rebalance orders         |
-| POST   | `/api/rebalance/{clientId}/execute` | Execute rebalance                |
-| POST   | `/api/suitability/check`            | Validate trade suitability       |
+| POST   | `/api/v1/auth/token`                | Get JWT token                    |
+| GET    | `/api/v1/clients`                   | List all clients                 |
+| GET    | `/api/v1/clients/{id}`              | Client detail + risk profile     |
+| POST   | `/api/v1/clients/{id}/risk-assessment` | Submit risk questionnaire     |
+| GET    | `/api/v1/portfolio/{clientId}`      | Holdings, market value, return % |
+| GET    | `/api/v1/portfolio/{clientId}/drift`| Drift vs target allocation       |
+| GET    | `/api/v1/rebalance/{clientId}/preview` | Preview rebalance orders      |
+| POST   | `/api/v1/rebalance/{clientId}/execute` | Execute rebalance             |
+| POST   | `/api/v1/suitability/check`         | Validate trade suitability       |
 
 ---
 
-## Getting Started
+## Running Locally
 
 ### Prerequisites
 
 - .NET 10 SDK
-- SQL Server (local or Express)
-- Node.js 20+
+- PostgreSQL (or SQL Server)
+- Node.js 22+
 - Angular CLI 20+
 
-### 1. Database Setup
-
-Create the database and user in SQL Server:
-
-```sql
-CREATE DATABASE AtlasPortfolioEngine;
-CREATE LOGIN AtlasPortfolioUser WITH PASSWORD = 'AtlasPortfolioUser';
-USE AtlasPortfolioEngine;
-CREATE USER AtlasPortfolioUser FOR LOGIN AtlasPortfolioUser;
-ALTER ROLE db_owner ADD MEMBER AtlasPortfolioUser;
-```
-
-### 2. Run the API
+### 1. Run the API
 
 ```bash
-cd AtlasPortfolioEngine/AtlasPortfolioEngine.API
-dotnet run
+cd AtlasPortfolioEngine
+dotnet run --project AtlasPortfolioEngine.API
+# Runs on http://localhost:5146
+# Swagger: http://localhost:5146/swagger
 ```
 
-The API starts at `http://localhost:5146`. Swagger UI is available at `http://localhost:5146/swagger`.
-
-Seed data is applied automatically on first run:
+Schema and seed data are applied automatically on first run:
 
 - **Client:** Sarah Mitchell (sarah.mitchell@email.com)
 - **Risk Profile:** Score 72 → Growth
-- **Portfolio:** 5 Canadian ETFs (XIC, XUS, XEF, XBB, XGBO) — $32,595 total value
+- **Portfolio:** 5 Canadian ETFs (XIC, XUS, XEF, XBB, XGBO) — ~$32,595 total value
 
-### 3. Run the Frontend
+### 2. Run the Frontend
 
 ```bash
 cd AtlasPortfolioEngine.Web
 npm install
 ng serve
+# Open http://localhost:4200
 ```
-
-Open `http://localhost:4200`.
 
 **Demo credentials:** `advisor` / `atlas2026`
 
-### 4. Run Unit Tests
+### 3. Run Unit Tests
 
 ```bash
-cd AtlasPortfolioEngine/AtlasPortfolioEngine.Tests
+cd AtlasPortfolioEngine
 dotnet test
+# Expected: 26 tests passing
 ```
-
-Expected: **26 tests passing**.
 
 ---
 
@@ -177,21 +170,6 @@ This is a demo project. In production:
 | ----------------- | ----------------------------------- | ------------------------------------------------ |
 | Auth              | Hardcoded JWT credentials in config | Azure AD B2C / IdentityServer                    |
 | JWT Secret        | `appsettings.json`                  | Azure Key Vault                                  |
-| Connection String | `appsettings.json`                  | Azure Key Vault / Managed Identity               |
-| CORS              | `localhost:4200` whitelist          | Environment-specific origins                     |
+| Connection String | Environment variable                | Azure Key Vault / Managed Identity               |
 | Prices            | Static seed data                    | Market data feed (e.g. Alpha Vantage, Refinitiv) |
 | Multi-tenancy     | Single advisor                      | Role-based access per firm                       |
-
----
-
-## Screenshots
-
-| View          | Description                                          |
-| ------------- | ---------------------------------------------------- |
-| Login         | JWT authentication with advisor credentials          |
-| Client List   | All clients with risk category badges                |
-| Client Detail | Risk profile + navigation to all 4 engines           |
-| Portfolio     | Holdings table with market value, weights, gain/loss |
-| Drift Report  | Target vs actual allocation with rebalancing flag    |
-| Rebalance     | Preview buy/sell orders, execute with one click      |
-| Suitability   | Compliance check with reason codes                   |

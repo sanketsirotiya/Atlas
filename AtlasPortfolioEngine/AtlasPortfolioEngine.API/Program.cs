@@ -55,9 +55,16 @@ var connectionString =
     Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL") ??
     builder.Configuration.GetConnectionString("DefaultConnection")!;
 
-if (connectionString.StartsWith("Host=", StringComparison.OrdinalIgnoreCase) ||
-    connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
+// Convert postgresql:// URL to Npgsql key=value format (NpgsqlConnectionStringBuilder requires it)
+if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
     connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+{
+    var uri = new Uri(connectionString);
+    var parts = uri.UserInfo.Split(':');
+    connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={Uri.UnescapeDataString(parts[0])};Password={Uri.UnescapeDataString(parts[1])};";
+}
+
+if (connectionString.StartsWith("Host=", StringComparison.OrdinalIgnoreCase))
 {
     builder.Services.AddDbContext<AtlasDbContext>(options => options.UseNpgsql(connectionString));
 }

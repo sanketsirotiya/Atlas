@@ -49,8 +49,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// EF Core — auto-detects PostgreSQL (Render) vs SQL Server (local) by connection string format
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+// EF Core — Railway injects DATABASE_URL automatically; fall back to appsettings for local dev
+var connectionString =
+    Environment.GetEnvironmentVariable("DATABASE_URL") ??
+    Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL") ??
+    builder.Configuration.GetConnectionString("DefaultConnection")!;
+
 if (connectionString.StartsWith("Host=", StringComparison.OrdinalIgnoreCase) ||
     connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
     connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
@@ -78,7 +82,9 @@ builder.Services.AddCors(options =>
             var uri = new Uri(origin);
             return uri.Host == "localhost" ||
                    uri.Host.StartsWith("192.168.") ||
-                   uri.Host.EndsWith(".onrender.com");
+                   uri.Host.EndsWith(".onrender.com") ||
+                   uri.Host.EndsWith(".railway.app") ||
+                   uri.Host.EndsWith(".up.railway.app");
         })
               .AllowAnyHeader()
               .AllowAnyMethod());

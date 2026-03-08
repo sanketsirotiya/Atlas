@@ -1,6 +1,3 @@
 [build]
-builder = "nixpacks"
-buildCommand = "npm install && npm run build"
-
-[deploy]
-startCommand = "npx --yes serve -s dist/AtlasPortfolioEngine.Web/browser -l $PORT"
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"

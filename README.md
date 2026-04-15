@@ -2,9 +2,11 @@
 
 A full-stack robo-advisor demo showcasing fintech domain knowledge — risk profiling, portfolio management, drift detection, rebalancing, and compliance enforcement.
 
-**Live Demo:** https://atlas-production-5b80.up.railway.app
+<!-- **Live Demo:**
+-- https://atlas-production-5b80.up.railway.app
 
-**Demo credentials:** `advisor` / `atlas2026`
+**Demo credentials:**
+-- `advisor` / `atlas2026` -->
 
 ---
 
@@ -87,17 +89,17 @@ Base URL: `https://atlas-production-ad63.up.railway.app`
 
 All endpoints (except `/api/auth/token`) require `Authorization: Bearer <token>`.
 
-| Method | Endpoint                            | Description                      |
-| ------ | ----------------------------------- | -------------------------------- |
-| POST   | `/api/v1/auth/token`                | Get JWT token                    |
-| GET    | `/api/v1/clients`                   | List all clients                 |
-| GET    | `/api/v1/clients/{id}`              | Client detail + risk profile     |
-| POST   | `/api/v1/clients/{id}/risk-assessment` | Submit risk questionnaire     |
-| GET    | `/api/v1/portfolio/{clientId}`      | Holdings, market value, return % |
-| GET    | `/api/v1/portfolio/{clientId}/drift`| Drift vs target allocation       |
-| GET    | `/api/v1/rebalance/{clientId}/preview` | Preview rebalance orders      |
-| POST   | `/api/v1/rebalance/{clientId}/execute` | Execute rebalance             |
-| POST   | `/api/v1/suitability/check`         | Validate trade suitability       |
+| Method | Endpoint                               | Description                      |
+| ------ | -------------------------------------- | -------------------------------- |
+| POST   | `/api/v1/auth/token`                   | Get JWT token                    |
+| GET    | `/api/v1/clients`                      | List all clients                 |
+| GET    | `/api/v1/clients/{id}`                 | Client detail + risk profile     |
+| POST   | `/api/v1/clients/{id}/risk-assessment` | Submit risk questionnaire        |
+| GET    | `/api/v1/portfolio/{clientId}`         | Holdings, market value, return % |
+| GET    | `/api/v1/portfolio/{clientId}/drift`   | Drift vs target allocation       |
+| GET    | `/api/v1/rebalance/{clientId}/preview` | Preview rebalance orders         |
+| POST   | `/api/v1/rebalance/{clientId}/execute` | Execute rebalance                |
+| POST   | `/api/v1/suitability/check`            | Validate trade suitability       |
 
 ---
 
@@ -134,7 +136,7 @@ ng serve
 # Open http://localhost:4200
 ```
 
-**Demo credentials:** `advisor` / `atlas2026`
+<!-- **Demo credentials:** `advisor` / `atlas2026` -->
 
 ### 3. Run Unit Tests
 
